@@ -41,7 +41,6 @@ import yaml
 import pandas as pd
 from typing import Literal
 
-import openoa.utils.downloader as downloader
 from openoa.plant import PlantData
 from openoa.logging import logging
 
@@ -198,6 +197,9 @@ def prepare(root_folder: str | Path, asset: str = "Kelmarsh", output_folder: str
 
     # Set the path to store and access all the data
 
+    output_folder = Path(output_folder)
+    output_folder.mkdir(parents=True, exist_ok=True)
+    
     if extract:
         for p in root_folder.iterdir():
             if p.suffix == ".zip":
@@ -207,7 +209,7 @@ def prepare(root_folder: str | Path, asset: str = "Kelmarsh", output_folder: str
                 link = Path(output_folder) / p.name
                 if link.is_symlink():
                     link.unlink()
-                link.symlink_to(p)
+                link.resolve().symlink_to(p)
 
     ##############
     # ASSET DATA #
